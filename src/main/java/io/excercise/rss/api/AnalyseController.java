@@ -1,6 +1,6 @@
 package io.excercise.rss.api;
 
-import io.excercise.rss.requestqueue.MessageSender;
+import io.excercise.rss.requestqueue.RequestMessageSender;
 import io.excercise.rss.requestqueue.RequestMessage;
 import io.excercise.rss.services.FeedAnalysingService;
 import io.excercise.rss.services.IdGeneratorService;
@@ -27,10 +27,10 @@ public class AnalyseController {
 
     @Autowired
     private IdGeneratorService idGeneratorService;
-
     @Autowired
-    private MessageSender messageSender;
-    //TODO : Service to get result from DB
+    private FeedAnalysingService feedAnalysingService;
+    @Autowired
+    private RequestMessageSender requestMessageSender;
 
 
     @PostMapping("/analyse/new")
@@ -54,13 +54,13 @@ public class AnalyseController {
 
         String requestId = idGeneratorService.generateId();
 
-        messageSender.sendMessage(new RequestMessage(requestId, urisToAnalyse));
+        requestMessageSender.sendMessage(new RequestMessage(requestId, urisToAnalyse));
 
         return requestId;
     }
 
     @GetMapping("/frequency/{id}")
     public FrequencyResponse getFrequency(@PathVariable String id) {
-        return new FrequencyResponse();
+        return feedAnalysingService.getAnalysisResult(id);
     }
 }

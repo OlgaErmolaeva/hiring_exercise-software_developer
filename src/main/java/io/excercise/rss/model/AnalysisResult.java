@@ -1,7 +1,9 @@
 package io.excercise.rss.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,12 +15,14 @@ public class AnalysisResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long resultId;
+
     @Column
     private String requestId;
     @Column
     private Status status;
-    @OneToMany
+
+    @OneToMany(mappedBy = "result", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<FeedEntity> topNews;
 
     public AnalysisResult() {
@@ -28,12 +32,12 @@ public class AnalysisResult {
         this.requestId = requestId;
     }
 
-    public Long getId() {
-        return id;
+    public Long getResultId() {
+        return resultId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setResultId(Long resultId) {
+        this.resultId = resultId;
     }
 
     public String getRequestId() {
@@ -57,6 +61,9 @@ public class AnalysisResult {
     }
 
     public void setTopNews(List<FeedEntity> topNews) {
+        if (topNews != null) {
+            topNews.forEach(e -> e.setResult(this)); // For bidirectional Hibernate mapping
+        }
         this.topNews = topNews;
     }
 }

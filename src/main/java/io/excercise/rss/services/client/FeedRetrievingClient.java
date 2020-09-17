@@ -1,6 +1,7 @@
 package io.excercise.rss.services.client;
 
 import io.excercise.rss.services.Feed;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,7 +13,8 @@ import java.util.stream.Collectors;
 @Component
 public class FeedRetrievingClient {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
 
     public List<Feed> getFeeds(URI uri) {
         Rss rss = restTemplate.getForObject(uri, Rss.class);

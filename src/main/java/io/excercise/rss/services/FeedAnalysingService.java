@@ -1,7 +1,7 @@
 package io.excercise.rss.services;
 
+import io.excercise.rss.api.FrequencyResponse;
 import io.excercise.rss.dao.AnalysisResultRepository;
-import io.excercise.rss.dao.FeedRepository;
 import io.excercise.rss.model.AnalysisResult;
 import io.excercise.rss.model.EntityTransformer;
 import io.excercise.rss.model.Status;
@@ -28,10 +28,12 @@ public class FeedAnalysingService {
     private EntityTransformer transformer;
 
     @Autowired
-    private FeedRepository feedDAO;
-
-    @Autowired
     private AnalysisResultRepository frequencyRespDAO;
+
+    public FrequencyResponse getAnalysisResult(String requestId) {
+        AnalysisResult analysisResult = frequencyRespDAO.getByRequestId(requestId);
+        return transformer.toResponse(analysisResult);
+    }
 
     public void analyseURLsForRequest(String requestId, Set<URI> urisToAnalyse) {
         try {
@@ -56,13 +58,13 @@ public class FeedAnalysingService {
             }
 
             frequencyRespDAO.save(analysisResult);
-        } catch (Exception e){
-            logger.error("Caught exception" ,e);
+        } catch (Exception e) {
+            logger.error("Caught exception", e);
         }
     }
 
     private List<Feed> getFeedsOrderedByFrequency(List<Feed> allRetrievedFeeds) {
-
+        //TODO: All business logic here
         return List.of(allRetrievedFeeds.iterator().next());
     }
 }

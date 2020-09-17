@@ -10,15 +10,15 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 
 @Component
-public class MessageListener {
-    private static Logger logger = getLogger(MessageListener.class);
+public class AnalyseRequestListener {
+    private static Logger logger = getLogger(AnalyseRequestListener.class);
 
     @Autowired
     private FeedAnalysingService feedAnalysingService;
 
     @JmsListener(destination = "requestQueue", containerFactory = "concurrentContainerFactory")
     public void onMessage(RequestMessage message) {
-        logger.trace("Received message with requestId: {}", message);
+        logger.debug("Received message with requestId: {}", message);
         feedAnalysingService.analyseURLsForRequest(message.getRequestId(), message.getUrisToAnalyse());
 
     }

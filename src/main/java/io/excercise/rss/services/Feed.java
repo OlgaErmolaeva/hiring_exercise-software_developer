@@ -6,7 +6,6 @@ public class Feed {
 
     private String title;
     private String link;
-    private String content;
     private Integer frequency;
 
     public String getTitle() {
@@ -23,14 +22,6 @@ public class Feed {
 
     public void setLink(String link) {
         this.link = link;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public Integer getFrequency() {
