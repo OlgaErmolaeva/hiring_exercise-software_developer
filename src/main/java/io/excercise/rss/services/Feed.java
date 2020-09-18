@@ -1,10 +1,12 @@
 package io.excercise.rss.services;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Feed {
 
     private String title;
+    private List<String> cleanedTitle;
     private String link;
     private Integer frequency;
 
@@ -14,6 +16,14 @@ public class Feed {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public List<String> getCleanedTitle() {
+        return cleanedTitle;
+    }
+
+    public void setCleanedTitle(List<String> cleanedTitle) {
+        this.cleanedTitle = cleanedTitle;
     }
 
     public String getLink() {
