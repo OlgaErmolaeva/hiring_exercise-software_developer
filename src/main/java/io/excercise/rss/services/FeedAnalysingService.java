@@ -48,32 +48,31 @@ public class FeedAnalysingService {
         return transformer.toResponse(analysisResult);
     }
 
-    public void analyseURLsForRequest(String requestId, Set<URI> urisToAnalyse) {
-        try {
-            AnalysisResult analysisResult = new AnalysisResult(requestId);
-            analysisResult.setStatus(Status.RUNNING);
+    public void analyseURLsForRequest(String requestId, List<URI> urisToAnalyse) {
+        AnalysisResult analysisResult = new AnalysisResult(requestId);
+        analysisResult.setStatus(Status.RUNNING);
 
-            // Save immediately in case client will ask for his result just after he posted the request
-            frequencyRespDAO.save(analysisResult);
+        // Save immediately in case client will ask for his result just after he posted the request
+        frequencyRespDAO.save(analysisResult);
 
-            List<List<Feed>> allRetrievedFeeds = new ArrayList<>();
+        List<List<Feed>> allRetrievedFeeds = new ArrayList<>();
 
-            for (URI uri : urisToAnalyse) {
-                allRetrievedFeeds.add(feedRetrievingClient.getFeeds(uri));
+        for (URI uri : urisToAnalyse) {
+            List<Feed> feeds = feedRetrievingClient.getFeeds(uri);
+            if (!feeds.isEmpty()) {
+                allRetrievedFeeds.add(feeds);
             }
-
-            if (allRetrievedFeeds.isEmpty()) {
-                analysisResult.setStatus(Status.ERROR);
-            } else {
-                List<Feed> topFeeds = get10TopFeeds(allRetrievedFeeds);
-                analysisResult.setStatus(Status.READY);
-                analysisResult.setTopNews(transformer.toEntities(topFeeds));
-            }
-
-            frequencyRespDAO.save(analysisResult);
-        } catch (Exception e) {
-            logger.error("Caught exception", e);
         }
+
+        if (allRetrievedFeeds.isEmpty()) {
+            analysisResult.setStatus(Status.ERROR);
+        } else {
+            List<Feed> topFeeds = get10TopFeeds(allRetrievedFeeds);
+            analysisResult.setStatus(Status.READY);
+            analysisResult.setTopNews(transformer.toEntities(topFeeds));
+        }
+
+        frequencyRespDAO.save(analysisResult);
     }
 
     List<Feed> get10TopFeeds(List<List<Feed>> allRetrievedFeeds) {

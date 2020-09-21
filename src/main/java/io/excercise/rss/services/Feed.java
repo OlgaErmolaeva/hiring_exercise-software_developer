@@ -1,11 +1,14 @@
 package io.excercise.rss.services;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 import java.util.Objects;
 
 public class Feed {
 
     private String title;
+    @JsonIgnore // This is for analysis only
     private List<String> cleanedTitle;
     private String link;
     private Integer frequency;

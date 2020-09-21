@@ -18,8 +18,7 @@ public class AnalyseRequestListener {
 
     @JmsListener(destination = "requestQueue", containerFactory = "concurrentContainerFactory")
     public void onMessage(RequestMessage message) {
-        logger.debug("Received message with requestId: {}", message);
+        logger.trace("Received message with requestId: {}", message);
         feedAnalysingService.analyseURLsForRequest(message.getRequestId(), message.getUrisToAnalyse());
-
     }
 }

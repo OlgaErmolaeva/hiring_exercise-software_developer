@@ -4,6 +4,7 @@ import io.excercise.rss.requestqueue.RequestMessageSender;
 import io.excercise.rss.requestqueue.RequestMessage;
 import io.excercise.rss.services.FeedAnalysingService;
 import io.excercise.rss.services.IdGeneratorService;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +21,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@RestController
-public class AnalyseController {
+import static org.slf4j.LoggerFactory.getLogger;
 
-    // TODO: add logger
+@RestController
+public class AnalyseRssController {
+
+    private static final Logger logger = getLogger(AnalyseRssController.class);
 
     @Autowired
     private IdGeneratorService idGeneratorService;
@@ -38,19 +41,17 @@ public class AnalyseController {
     public String submitFeed(@RequestBody List<String> rssURLs) {
         if (rssURLs.size() < 2) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Provided less then 2 URLs to analyse.");
-            // logger.error
         }
 
-        Set<URI> urisToAnalyse = rssURLs.stream()
+        List<URI> urisToAnalyse = rssURLs.stream()
                 .map(s -> {
                     try {
                         return new URI(s);
                     } catch (URISyntaxException e) {
-                        // logger.error
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Provided URL is in a wrong format.");
                     }
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         String requestId = idGeneratorService.generateId();
 
